@@ -39,7 +39,7 @@ function input() {
     process.stdin.setRawMode(true);
     process.stdin.once("keypress", (char, evt) => {
       if (evt.ctrl || evt.meta || evt.shift) {
-        if (evt.name === "c") {
+        if (evt.name === "c" && evt.ctrl) {
           process.exit(0);
         }
         return;
@@ -61,47 +61,39 @@ async function parse(
     switch (char) {
       case "+":
         memory[memoryIndex]++;
-        codeIndex++;
         break;
       case "-":
         memory[memoryIndex]--;
-        codeIndex++;
         break;
       case ">":
         memoryIndex++;
-        codeIndex++;
         break;
       case "<":
         memoryIndex--;
-        codeIndex++;
         break;
       case ".":
         process.stdout.write(String.fromCharCode(memory[memoryIndex]));
-        codeIndex++;
         break;
       case ",":
         const data = await input();
         memory[memoryIndex] = data;
-        codeIndex++;
         break;
       case "[":
         if (memory[memoryIndex] === 0) {
           codeIndex = jumps.get(codeIndex) as number;
           break;
         }
-        codeIndex++;
         break;
       case "]":
         if (memory[memoryIndex] !== 0) {
           codeIndex = jumps.get(codeIndex) as number;
           break;
         }
-        codeIndex++;
         break;
       default:
-        codeIndex++;
         break;
     }
+    codeIndex++;
   }
 }
 
