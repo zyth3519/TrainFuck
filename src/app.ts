@@ -81,13 +81,13 @@ async function parse(
       case "[":
         if (memory[memoryIndex] === 0) {
           codeIndex = jumps.get(codeIndex) as number;
-          break;
+          continue;
         }
         break;
       case "]":
         if (memory[memoryIndex] !== 0) {
           codeIndex = jumps.get(codeIndex) as number;
-          break;
+          continue;
         }
         break;
       default:
@@ -97,7 +97,7 @@ async function parse(
   }
 }
 
-function main() {
+async function main() {
   const args = process.argv;
   if (args.length < 3) {
     printUsage();
@@ -109,7 +109,8 @@ function main() {
   const memory = new Uint8Array(1000);
   const memoryIndex = 0;
   const jumps = findJumps(code);
-  parse(code, codeIndex, memory, memoryIndex, jumps);
+  await parse(code, codeIndex, memory, memoryIndex, jumps);
+  process.exit(0);
 }
 
 main();
